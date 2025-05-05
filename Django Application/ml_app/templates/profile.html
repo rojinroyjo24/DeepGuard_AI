@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="profile-container">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4 profile-card">
+                    <div class="card-body text-center">
+                        <div class="profile-image-container">
+                            <i class="fas fa-user-shield profile-icon"></i>
+                        </div>
+                        <h5 class="my-3">{{ user.username }}</h5>
+                        <div class="badge badge-primary mb-3">DeepGuard AI User</div>
+                        <p class="text-muted mb-4">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            Since {{ user.date_joined|date:"F j, Y" }}
+                        </p>
+                        <div class="d-flex justify-content-center mb-2">
+                            <a href="{% url 'ml_app:upload' %}" class="btn btn-primary btn-sm mr-2">
+                                <i class="fas fa-upload mr-2"></i>Upload
+                            </a>
+                            <a href="{% url 'ml_app:logout' %}" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4 profile-stats-card">
+                    <div class="card-body">
+                        <h6 class="card-title text-center">
+                            <i class="fas fa-chart-line mr-2"></i>Activity Stats
+                        </h6>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Login:</span>
+                            <span class="stat-value">{{ user.last_login|date:"F j, Y, g:i a" }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Status:</span>
+                            <span class="stat-value text-success">
+                                <i class="fas fa-circle status-active mr-1"></i>Active
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card mb-4 profile-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-id-card mr-2"></i>User Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">
+                                    <i class="fas fa-user text-primary mr-2"></i>Username
+                                </p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{ user.username }}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">
+                                    <i class="fas fa-envelope text-primary mr-2"></i>Email
+                                </p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{ user.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4 profile-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-shield-alt mr-2"></i>Security</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Your account is protected with strong security measures.</p>
+                        <div class="security-features">
+                            <div class="security-item">
+                                <i class="fas fa-lock text-success"></i>
+                                <span>Password Protection</span>
+                            </div>
+                            <div class="security-item">
+                                <i class="fas fa-user-shield text-success"></i>
+                                <span>Account Verification</span>
+                            </div>
+                            <div class="security-item">
+                                <i class="fas fa-shield-alt text-success"></i>
+                                <span>Data Encryption</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4 profile-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-cogs mr-2"></i>Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="action-buttons">
+                            <a href="{% url 'ml_app:upload' %}" class="btn btn-primary">
+                                <i class="fas fa-upload mr-2"></i>Upload New Video
+                            </a>
+                            <a href="{% url 'ml_app:logout' %}" class="btn btn-outline-danger">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

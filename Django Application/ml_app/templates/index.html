@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{%load static%}
+{%block content%}
+<div class="container-fluid py-5 bg-light">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0 text-center">
+                        <i class="fas fa-upload mr-2"></i>Video Analysis
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <p class="lead">Upload a video to analyze its authenticity</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="upload-preview text-center">
+                            <video width="100%" controls id="videos" class="mb-3 rounded">
+                                <source src="" id="video_source">
+                                Your browser does not support HTML5 video.
+                            </video>
+                        </div>
+                    </div>
+
+                    <form class="form" method="POST" enctype="multipart/form-data" name="video-upload" id="video-upload">
+                        {%csrf_token%}
+                        <div class="form-group">
+                            <label class="upload-btn btn btn-outline-primary btn-block py-3">
+                                <i class="fas fa-file-video mr-2"></i>Select Video File
+                                {{form.upload_video_file}}
+                            </label>
+                            {%if form.upload_video_file.errors%}
+                            {%for each_error in form.upload_video_file.errors%}
+                            <div class="alert alert-danger mt-1 {{form.upload_video_file.id_for_label}}">
+                                {{each_error}}
+                            </div>
+                            {%endfor%}
+                            {%endif%}
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <label for="{{form.sequence_length.id_for_label}}">
+                                <strong>{{form.sequence_length.label}}:</strong> <span id="slider-value" class="badge badge-primary"></span>
+                            </label>
+                            <input type="number" hidden="hidden" id="{{form.sequence_length.id_for_label}}"
+                                name="{{form.sequence_length.name}}"></input>
+                            <div id='slider' class="mt-2"></div>
+                            <small class="form-text text-muted">Higher values provide more accuracy but slower processing</small>
+                            {%if form.sequence_length.errors%}
+                            {%for each_error in form.sequence_length.errors%}
+                            <div class="alert alert-danger mt-1 {{form.sequence_length.id_for_label}}">
+                                {{each_error}}
+                            </div>
+                            {%endfor%}
+                            {%endif%}
+                        </div>
+
+                        <button id="videoUpload" type="submit" name="submit" class="btn btn-success btn-lg btn-block mt-4">
+                            <i class="fas fa-cloud-upload-alt mr-2"></i>Analyze Video
+                        </button>
+                    </form>
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="text-center text-muted">
+                        <small>Supported formats: MP4, AVI, WEBM, MOV, GIF</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
+
+{%block js_cripts%}
+<script src="{%static 'js/script.js'%}"></script>
+<script>
+    $(function () {
+        var sliderSequenceNumbers = [10,20,40,60,80,100];
+        var slider = $("div#slider").slider({
+            value: 1,
+            min: 0,
+            max: sliderSequenceNumbers.length-1,
+            slide: function (event, ui) {
+                $('#{{form.sequence_length.id_for_label}}').val(sliderSequenceNumbers[ui.value]);
+                $('#{{form.sequence_length.id_for_label}}').val(sliderSequenceNumbers[ui.value]);
+                $('#slider-value').html(sliderSequenceNumbers[ui.value]);
+            }
+        });
+        $("#{{form.sequence_length.id_for_label}}").val(sliderSequenceNumbers[$("#slider").slider("value")]);
+        $('#slider-value').html(sliderSequenceNumbers[$("#slider").slider("value")]);
+    });
+</script>
+{%endblock%}

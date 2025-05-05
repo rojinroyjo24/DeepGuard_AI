@@ -1,0 +1,315 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+<style>
+    .card {
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        border: none;
+    }
+    .card-header {
+        font-weight: 600;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0,0,0,.125);
+    }
+    .stats-card {
+        text-align: center;
+        padding: 20px 10px;
+    }
+    .stats-card .value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+    .stats-card .label {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+    .chart-container {
+        height: 300px;
+        position: relative;
+    }
+    .table-stats th {
+        font-weight: 600;
+    }
+    .progress {
+        height: 10px;
+        margin-bottom: 10px;
+    }
+    .small-stat {
+        font-size: 0.9rem;
+    }
+    .text-real {
+        color: #28a745;
+    }
+    .text-fake {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+{% endblock %}
+
+{% block title %}DeepGuard AI Dashboard{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; Statistics Dashboard
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h1>DeepGuard AI Dashboard</h1>
+    <p class="text-muted">Analytics and statistics for the deepfake detection system</p>
+    
+    <!-- Stats Overview -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="text-primary">
+                    <i class="fas fa-users fa-2x mb-3"></i>
+                </div>
+                <p class="value">{{ total_users }}</p>
+                <p class="label">Total Users</p>
+                <div class="small-stat mt-2">
+                    <span class="badge badge-info">{{ active_users }} active</span>
+                    <span class="badge badge-success">+{{ new_users }} this week</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="text-success">
+                    <i class="fas fa-video fa-2x mb-3"></i>
+                </div>
+                <p class="value">{{ total_detections }}</p>
+                <p class="label">Total Detections</p>
+                <div class="small-stat mt-2">
+                    <span class="badge badge-primary">+{{ recent_detections }} this week</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="text-danger">
+                    <i class="fas fa-chart-pie fa-2x mb-3"></i>
+                </div>
+                <p class="value">
+                    {% for item in confidence_distribution %}
+                        {% if item.result == 'fake' %}
+                            {{ item.avg_confidence|floatformat:1 }}%
+                        {% endif %}
+                    {% endfor %}
+                </p>
+                <p class="label">Avg. Confidence Score</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="text-warning">
+                    <i class="fas fa-clock fa-2x mb-3"></i>
+                </div>
+                <p class="value">{{ avg_detection_time }}s</p>
+                <p class="label">Avg. Detection Time</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Detection Results Distribution
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="resultsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Detection Trend (Last 30 Days)
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Data Tables Row -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Most Active Users
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-hover table-stats">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Detections</th>
+                                <th>Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in active_users_data %}
+                            <tr>
+                                <td>{{ user.user__username }}</td>
+                                <td>{{ user.detection_count }}</td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-info" role="progressbar" 
+                                             style="width: {{ user.detection_count|divisibleby:total_detections|default:5 }}%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Detection Confidence by Result
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-hover table-stats">
+                        <thead>
+                            <tr>
+                                <th>Result Type</th>
+                                <th>Avg. Confidence</th>
+                                <th>Confidence Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in confidence_distribution %}
+                            <tr>
+                                <td>
+                                    {% if item.result == 'real' %}
+                                    <span class="text-real">Real Videos</span>
+                                    {% elif item.result == 'fake' %}
+                                    <span class="text-fake">Fake Videos</span>
+                                    {% else %}
+                                    <span class="text-secondary">Unknown</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.avg_confidence|floatformat:2 }}%</td>
+                                <td>
+                                    <div class="progress">
+                                        {% if item.result == 'real' %}
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                             style="width: {{ item.avg_confidence }}%"></div>
+                                        {% elif item.result == 'fake' %}
+                                        <div class="progress-bar bg-danger" role="progressbar" 
+                                             style="width: {{ item.avg_confidence }}%"></div>
+                                        {% else %}
+                                        <div class="progress-bar bg-secondary" role="progressbar" 
+                                             style="width: {{ item.avg_confidence }}%"></div>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="row mt-4 mb-5">
+        <div class="col-12 text-right">
+            <a href="{% url 'admin:ml_app_detectionhistory_changelist' %}" class="btn btn-primary">
+                <i class="fas fa-list"></i> Manage Detections
+            </a>
+            <a href="{% url 'admin:auth_user_changelist' %}" class="btn btn-secondary">
+                <i class="fas fa-users"></i> Manage Users
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Results Distribution Chart
+        var resultsCtx = document.getElementById('resultsChart').getContext('2d');
+        var resultsData = {{ results_chart_data|safe }};
+        var resultsChart = new Chart(resultsCtx, {
+            type: 'doughnut',
+            data: resultsData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Time Series Chart
+        var trendCtx = document.getElementById('trendChart').getContext('2d');
+        var trendData = {{ time_series_data|safe }};
+        var trendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: trendData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Detections'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %} 

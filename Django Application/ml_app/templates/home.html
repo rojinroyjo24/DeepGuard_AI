@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="fullscreen-bg">
+    <div class="overlay"></div>
+</div>
+
+<!-- Modern Hero Section with Slider -->
+<div class="hero-slider">
+    <div class="slide active" id="slide1">
+        <div class="slide-content">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-md-10 text-center slide-in-left">
+                        <div class="logo-container mb-4">
+                            <img src="{% static 'images/deepguard-logo.svg' %}" alt="DeepGuard AI Logo" class="main-logo pulse">
+                        </div>
+                        <h1 class="hero-title mb-4">DeepGuard AI</h1>
+                        <p class="hero-subtitle mb-5">Advanced deepfake detection powered by cutting-edge artificial intelligence</p>
+                        <div class="mt-5 auth-buttons fade-in">
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'ml_app:upload' %}" class="btn btn-glow btn-lg mr-3">
+                                    <i class="fas fa-upload mr-2"></i> Upload Video
+                                </a>
+                            {% else %}
+                                <a href="{% url 'ml_app:login' %}" class="btn btn-glow btn-lg mr-3">
+                                    <i class="fas fa-sign-in-alt mr-2"></i> Login
+                                </a>
+                                <a href="{% url 'ml_app:register' %}" class="btn btn-outline-light btn-lg btn-hover-effect">
+                                    <i class="fas fa-user-plus mr-2"></i> Register
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide" id="slide2">
+        <div class="slide-content">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 slide-in-left">
+                        <div class="deepfake-info">
+                            <h2 class="text-gradient mb-4">What Are Deepfakes?</h2>
+                            <p class="mb-4">Deepfakes use AI to create convincing fake videos by swapping faces or manipulating speech. They pose serious risks to privacy, security, and information integrity.</p>
+                            <div class="stats-container">
+                                <div class="stat-item">
+                                    <span class="stat-number count-up">96</span>%
+                                    <span class="stat-text">of deepfakes are non-consensual</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number count-up">85</span>%
+                                    <span class="stat-text">increase in deepfakes yearly</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center slide-in-right">
+                        <div class="deepfake-image-container">
+                            <img src="{% static 'images/deepfake-comparison.png' %}" alt="Deepfake Comparison" class="img-fluid rounded shadow-lg">
+                            <div class="image-caption">Real vs Deepfake Comparison</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide" id="slide3">
+        <div class="slide-content">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center slide-in-left">
+                        <div class="detection-image-container">
+                            <img src="{% static 'images/ai-detection.png' %}" alt="AI Detection Process" class="img-fluid rounded shadow-lg">
+                            <div class="image-caption">Our AI Detection Process</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 slide-in-right">
+                        <div class="detection-info">
+                            <h2 class="text-gradient mb-4">How We Detect Deepfakes</h2>
+                            <p class="mb-4">DeepGuard AI analyzes subtle inconsistencies in facial movements, lighting, and blending that human eyes often miss.</p>
+                            <div class="detection-steps">
+                                <div class="step">
+                                    <div class="step-icon"><i class="fas fa-video"></i></div>
+                                    <div class="step-text">Frame Extraction</div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-icon"><i class="fas fa-user"></i></div>
+                                    <div class="step-text">Face Detection</div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-icon"><i class="fas fa-brain"></i></div>
+                                    <div class="step-text">Neural Analysis</div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-icon"><i class="fas fa-chart-bar"></i></div>
+                                    <div class="step-text">Result Generation</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Slider Navigation -->
+    <div class="slider-nav">
+        <button class="nav-dot active" data-slide="slide1"></button>
+        <button class="nav-dot" data-slide="slide2"></button>
+        <button class="nav-dot" data-slide="slide3"></button>
+    </div>
+</div>
+
+<!-- Features Section with Animations -->
+<div class="container">
+    <div class="row mt-5 pt-5 features-section">
+        <div class="col-12 text-center mb-5">
+            <h2 class="section-title fade-in-up">How DeepGuard AI Works</h2>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-card fade-in-up" data-delay="100">
+                <div class="feature-icon-animated">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Upload</h3>
+                <p>Upload your video file in just a few clicks. We support various video formats for analysis.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-card fade-in-up" data-delay="300">
+                <div class="feature-icon-animated">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Analyze</h3>
+                <p>Our DeepGuard AI algorithm analyzes facial features frame by frame to detect manipulation.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-card fade-in-up" data-delay="500">
+                <div class="feature-icon-animated">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3>Get Results</h3>
+                <p>Receive detailed detection results with confidence scores and visual analysis.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tech Section with Animations -->
+    <div class="row mt-5 pt-5 tech-section">
+        <div class="col-12 text-center mb-5">
+            <h2 class="section-title fade-in-up">Powered By Advanced Technology</h2>
+        </div>
+        <div class="col-md-6 fade-in-left">
+            <div class="tech-info">
+                <h3>DeepGuard AI Models</h3>
+                <p>Our system uses state-of-the-art convolutional neural networks and facial recognition technology to detect even the most sophisticated deepfakes.</p>
+                <ul class="tech-list">
+                    <li>ResNeXt-based architecture</li>
+                    <li>Frame-by-frame analysis</li>
+                    <li>Facial feature extraction</li>
+                    <li>High confidence detection</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6 fade-in-right">
+            <div class="neural-network-animation">
+                <div class="nodes-container">
+                    <!-- Neural network animation elements will be created by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row mt-5 pt-5 mb-5 cta-section text-center">
+        <div class="col-md-8 mx-auto fade-in-up">
+            <h2 class="mb-4">Ready to Verify Your Videos?</h2>
+            <p class="mb-4">Join thousands of users who trust DeepGuard AI to verify the authenticity of their videos.</p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'ml_app:upload' %}" class="btn btn-glow btn-lg">
+                    <i class="fas fa-upload mr-2"></i> Upload Now
+                </a>
+            {% else %}
+                <a href="{% url 'ml_app:register' %}" class="btn btn-glow btn-lg">
+                    <i class="fas fa-rocket mr-2"></i> Get Started
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_cripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate elements when they come into view
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .fade-in');
+            
+            elements.forEach(element => {
+                const position = element.getBoundingClientRect();
+                const delay = element.getAttribute('data-delay') || 0;
+                
+                // Check if element is in viewport
+                if(position.top < window.innerHeight && position.bottom >= 0) {
+                    setTimeout(() => {
+                        element.classList.add('animated');
+                    }, delay);
+                }
+            });
+        };
+        
+        // Run on page load
+        animateOnScroll();
+        
+        // Run on scroll
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Hero slider functionality
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        let currentSlide = 0;
+        
+        // Auto slide change
+        const autoSlide = setInterval(() => {
+            changeSlide((currentSlide + 1) % slides.length);
+        }, 8000);
+        
+        // Click on dots to change slide
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                clearInterval(autoSlide);
+                changeSlide(index);
+            });
+        });
+        
+        function changeSlide(index) {
+            // Hide current slide
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            
+            // Show new slide
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+        
+        // Create neural network animation
+        const nodesContainer = document.querySelector('.nodes-container');
+        if(nodesContainer) {
+            const nodeCount = 40;
+            const lineCount = 60;
+            
+            // Create nodes
+            for(let i = 0; i < nodeCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'node';
+                node.style.left = `${Math.random() * 100}%`;
+                node.style.top = `${Math.random() * 100}%`;
+                node.style.animationDelay = `${Math.random() * 5}s`;
+                nodesContainer.appendChild(node);
+            }
+            
+            // Create lines between nodes
+            for(let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'connection-line';
+                line.style.left = `${Math.random() * 100}%`;
+                line.style.top = `${Math.random() * 100}%`;
+                line.style.width = `${Math.random() * 100 + 50}px`;
+                line.style.transform = `rotate(${Math.random() * 360}deg)`;
+                line.style.animationDelay = `${Math.random() * 5}s`;
+                nodesContainer.appendChild(line);
+            }
+        }
+        
+        // Count-up animation for statistics
+        const countElements = document.querySelectorAll('.count-up');
+        countElements.forEach(element => {
+            const target = parseInt(element.textContent);
+            let count = 0;
+            const duration = 2000; // ms
+            const frameDuration = 1000/60; // 60fps
+            const totalFrames = Math.round(duration / frameDuration);
+            const increment = target / totalFrames;
+            
+            const animate = () => {
+                count += increment;
+                if(count < target) {
+                    element.textContent = Math.floor(count);
+                    requestAnimationFrame(animate);
+                } else {
+                    element.textContent = target;
+                }
+            };
+            
+            // Start animation when element comes into view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        animate();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+            
+            observer.observe(element);
+        });
+    });
+</script>
+{% endblock %} 

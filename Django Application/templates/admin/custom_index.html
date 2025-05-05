@@ -1,0 +1,25 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+<div style="margin-bottom: 20px; padding: 20px; background-color: #f8f9fa; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,.1);">
+    <h2 style="margin-top: 0; color: #417690;">DeepGuard AI Admin Dashboard</h2>
+    <p style="font-size: 16px; margin-bottom: 20px;">Welcome to the DeepGuard AI administration panel. Use the tools below to access enhanced dashboards with analytics, statistics, and user management interfaces.</p>
+    
+    <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
+        <a href="{% url 'admin_combined_dashboard' %}" class="button" style="background: #417690; color: white; border-radius: 4px; padding: 12px 20px; text-decoration: none; display: inline-flex; align-items: center; font-weight: bold;">
+            <span style="margin-right: 8px;">📊</span> Complete Admin Dashboard
+        </a>
+        
+        <a href="{% url 'admin_dashboard' %}" class="button" style="background: #28a745; color: white; border-radius: 4px; padding: 12px 20px; text-decoration: none; display: inline-flex; align-items: center; font-weight: bold;">
+            <span style="margin-right: 8px;">📈</span> Analytics Dashboard
+        </a>
+    </div>
+    
+    <p style="margin-top: 15px; font-size: 14px; color: #666;">
+        <strong>Tip:</strong> The custom dashboards provide visual analytics and statistics about users and detection results.
+    </p>
+</div>
+
+{{ block.super }}
+{% endblock %} 

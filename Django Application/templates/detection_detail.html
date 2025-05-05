@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detection Details - DeepGuard AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'ml_app:dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Detection Details</li>
+                </ol>
+            </nav>
+            <h2 class="border-bottom pb-2 text-primary">
+                <i class="fas fa-search mr-2"></i>Detection Details
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Video Information</h6>
+                    <a href="{% url 'ml_app:generate_report' detection.id %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-file-pdf mr-1"></i> Download Report
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="font-weight-bold">{{ detection.video_name }}</h5>
+                            <p class="text-muted">Analyzed on {{ detection.upload_date|date:"F d, Y H:i" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="result-box text-center p-4 rounded mb-3 {% if detection.result == 'FAKE' %}bg-danger{% else %}bg-success{% endif %} text-white">
+                                <h2 class="mb-0">{{ detection.result }}</h2>
+                                <p class="mb-0">Confidence: {{ detection.confidence_score }}%</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-box p-3 bg-light rounded">
+                                <p><strong>Original Filename:</strong> {{ detection.original_filename }}</p>
+                                <p><strong>Frames Analyzed:</strong> {{ detection.frames_analyzed }}</p>
+                                <p><strong>Processing Time:</strong> {{ detection.detection_time|floatformat:2 }} seconds</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="font-weight-bold">Analysis Conclusion</h6>
+                            <p>
+                                {% if detection.result == 'fake' %}
+                                This video was detected as a <strong class="text-danger">deepfake</strong> with {{ detection.confidence_score }}% confidence. The AI model has identified patterns consistent with manipulated content. Note that while our technology is advanced, no detection system is 100% accurate.
+                                {% else %}
+                                This video was detected as <strong class="text-success">real</strong> with {{ detection.confidence_score }}% confidence. The AI model did not identify patterns consistent with manipulated content. Note that while our technology is advanced, no detection system is 100% accurate.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Preview</h6>
+                </div>
+                <div class="card-body text-center">
+                    {% if detection.thumbnail_path %}
+                    <img src="{% static 'uploaded_images/'|add:detection.thumbnail_path %}" alt="Preview" class="img-fluid rounded mb-3" style="max-height: 200px;">
+                    {% else %}
+                    <div class="bg-secondary text-white rounded mb-3 d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-video fa-3x"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'ml_app:upload' %}" class="btn btn-primary btn-block mb-2">
+                        <i class="fas fa-upload mr-1"></i> Analyze New Video
+                    </a>
+                    <a href="{% url 'ml_app:dashboard' %}" class="btn btn-secondary btn-block">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
