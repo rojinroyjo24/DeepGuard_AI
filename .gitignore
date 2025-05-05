@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+
+# Virtual Environment
+venv/
+ENV/
+
+# Django
+*.log
+*.pyc
+db.sqlite3
+media
+
+# Deep Learning
+*.pt
+*.pth
+*.weights
+models/
+
+# Uploaded content
+uploaded_images/
+!uploaded_images/.gitkeep
+uploaded_videos/
+!uploaded_videos/.gitkeep
+
+# Large files
+*.mp4
+*.png
+*.jpg
+*.pdf
