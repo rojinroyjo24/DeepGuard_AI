@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4361ee" />
+      <stop offset="100%" stop-color="#7209b7" />
+    </linearGradient>
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3a0ca3" />
+      <stop offset="100%" stop-color="#4cc9f0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Shield shape -->
+  <path d="M32,8 L16,16 L16,32 C16,42 22,50 32,54 C42,50 48,42 48,32 L48,16 L32,8 Z" 
+        fill="url(#gradient2)" stroke="#ffffff" stroke-width="2" />
+  
+  <!-- Face outline -->
+  <circle cx="32" cy="30" r="10" fill="none" stroke="#ffffff" stroke-width="2" />
+  
+  <!-- Digital elements -->
+  <path d="M28,28 L36,28 M28,32 L36,32" 
+        stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+</svg> 

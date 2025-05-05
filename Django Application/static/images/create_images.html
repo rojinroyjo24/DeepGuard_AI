@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create DeepFake Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            background: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        button {
+            padding: 10px 15px;
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DeepFake Image Generator</h1>
+        
+        <h2>1. Deepfake Comparison Image</h2>
+        <canvas id="comparisonCanvas" width="800" height="400"></canvas>
+        <button onclick="downloadComparisonImage()">Download Comparison Image</button>
+        
+        <h2>2. AI Detection Process</h2>
+        <canvas id="detectionCanvas" width="800" height="400"></canvas>
+        <button onclick="downloadDetectionImage()">Download Detection Image</button>
+        
+        <h2>3. Pattern Background</h2>
+        <canvas id="patternCanvas" width="500" height="500"></canvas>
+        <button onclick="downloadPatternImage()">Download Pattern Background</button>
+    </div>
+
+    <script>
+        // Comparison Image
+        function drawComparisonImage() {
+            const canvas = document.getElementById('comparisonCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradient.addColorStop(0, '#7209b7');
+            gradient.addColorStop(1, '#4cc9f0');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw divider
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.fillRect(canvas.width/2 - 2, 50, 4, canvas.height - 100);
+            
+            // Labels
+            ctx.font = 'bold 30px Arial';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText('REAL', canvas.width/4, 50);
+            ctx.fillText('DEEPFAKE', 3*canvas.width/4, 50);
+            
+            // Face outline - left side (real)
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(canvas.width/4, canvas.height/2, 120, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Face features (real)
+            drawFaceFeatures(ctx, canvas.width/4, canvas.height/2, 'white', false);
+            
+            // Face outline - right side (fake)
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(3*canvas.width/4, canvas.height/2, 120, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Face features (fake) - with some distortions
+            drawFaceFeatures(ctx, 3*canvas.width/4, canvas.height/2, 'white', true);
+            
+            // Add some glitch effects on the fake side
+            drawGlitchEffect(ctx, 3*canvas.width/4 - 100, canvas.height/2 - 100, 200, 200);
+            
+            // Footer Label
+            ctx.font = 'bold 24px Arial';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText('Real vs Deepfake Comparison', canvas.width/2, canvas.height - 30);
+        }
+        
+        function drawFaceFeatures(ctx, x, y, color, isDistorted) {
+            // Eyes
+            ctx.fillStyle = color;
+            let eyeOffsetX = isDistorted ? 35 : 40;
+            let eyeOffsetY = isDistorted ? -30 : -25;
+            let eyeSize = isDistorted ? 28 : 20;
+            
+            // Left eye
+            ctx.beginPath();
+            ctx.ellipse(x - eyeOffsetX, y + eyeOffsetY, eyeSize, 15, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Right eye
+            ctx.beginPath();
+            ctx.ellipse(x + eyeOffsetX, y + eyeOffsetY, eyeSize, 15, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Nose
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+            if (isDistorted) {
+                ctx.moveTo(x, y);
+                ctx.lineTo(x - 10, y + 30);
+                ctx.lineTo(x + 15, y + 30);
+            } else {
+                ctx.moveTo(x, y - 10);
+                ctx.lineTo(x, y + 20);
+                ctx.lineTo(x + 15, y + 25);
+            }
+            ctx.stroke();
+            
+            // Mouth
+            ctx.beginPath();
+            if (isDistorted) {
+                // Distorted mouth
+                ctx.ellipse(x, y + 60, 50, 15, 0, 0.2, Math.PI - 0.2);
+            } else {
+                // Normal mouth
+                ctx.ellipse(x, y + 50, 40, 15, 0, 0, Math.PI);
+            }
+            ctx.stroke();
+        }
+        
+        function drawGlitchEffect(ctx, x, y, width, height) {
+            // Add some digital glitch effects
+            for (let i = 0; i < 8; i++) {
+                const glitchX = x + Math.random() * width;
+                const glitchY = y + Math.random() * height;
+                const glitchWidth = 20 + Math.random() * 80;
+                const glitchHeight = 3 + Math.random() * 10;
+                
+                ctx.fillStyle = `rgba(255, 0, 128, ${0.1 + Math.random() * 0.3})`;
+                ctx.fillRect(glitchX, glitchY, glitchWidth, glitchHeight);
+            }
+            
+            // Add some pixel distortion
+            for (let i = 0; i < 20; i++) {
+                const pixelX = x + Math.random() * width;
+                const pixelY = y + Math.random() * height;
+                const pixelSize = 3 + Math.random() * 8;
+                
+                ctx.fillStyle = `rgba(0, 255, 255, ${0.2 + Math.random() * 0.3})`;
+                ctx.fillRect(pixelX, pixelY, pixelSize, pixelSize);
+            }
+        }
+        
+        // AI Detection Process
+        function drawDetectionProcess() {
+            const canvas = document.getElementById('detectionCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradient.addColorStop(0, '#4361ee');
+            gradient.addColorStop(1, '#4cc9f0');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add subtle grid pattern
+            drawGrid(ctx, canvas.width, canvas.height);
+            
+            // Steps positions
+            const stepsX = [canvas.width * 0.15, canvas.width * 0.38, canvas.width * 0.62, canvas.width * 0.85];
+            const stepsY = canvas.height * 0.5;
+            const radius = 50;
+            
+            // Process steps
+            const steps = ['Frame\nExtraction', 'Face\nDetection', 'Neural\nAnalysis', 'Result\nGeneration'];
+            const icons = ['📹', '👤', '🧠', '📊'];
+            
+            // Draw connecting lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.lineWidth = 4;
+            ctx.setLineDash([5, 8]);
+            ctx.beginPath();
+            ctx.moveTo(stepsX[0] + radius, stepsY);
+            for (let i = 1; i < stepsX.length; i++) {
+                ctx.lineTo(stepsX[i] - radius, stepsY);
+                if (i < stepsX.length - 1) {
+                    ctx.moveTo(stepsX[i] + radius, stepsY);
+                }
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw steps
+            for (let i = 0; i < steps.length; i++) {
+                // Circle
+                const gradient = ctx.createRadialGradient(
+                    stepsX[i], stepsY, radius * 0.1,
+                    stepsX[i], stepsY, radius
+                );
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0.3)');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(stepsX[i], stepsY, radius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Icon
+                ctx.font = '40px Arial';
+                ctx.fillStyle = '#4361ee';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(icons[i], stepsX[i], stepsY - 5);
+                
+                // Label
+                ctx.font = 'bold 16px Arial';
+                ctx.fillStyle = 'white';
+                
+                // Multi-line text
+                const lines = steps[i].split('\n');
+                for (let j = 0; j < lines.length; j++) {
+                    ctx.fillText(lines[j], stepsX[i], stepsY + radius + 25 + j * 20);
+                }
+                
+                // Step number
+                ctx.font = 'bold 16px Arial';
+                ctx.fillStyle = 'white';
+                ctx.fillText(`Step ${i + 1}`, stepsX[i], stepsY - radius - 15);
+            }
+            
+            // Title
+            ctx.font = 'bold 30px Arial';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText('DeepGuard AI Detection Process', canvas.width/2, 50);
+        }
+        
+        function drawGrid(ctx, width, height) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            
+            // Horizontal lines
+            for (let y = 0; y < height; y += 20) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+            
+            // Vertical lines
+            for (let x = 0; x < width; x += 20) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+        }
+        
+        // Pattern Background
+        function drawPatternBackground() {
+            const canvas = document.getElementById('patternCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Fill with dark blue background
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw network pattern
+            drawNetworkPattern(ctx, canvas.width, canvas.height);
+        }
+        
+        function drawNetworkPattern(ctx, width, height) {
+            const nodeCount = 30;
+            const nodes = [];
+            
+            // Create nodes
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: 1 + Math.random() * 3
+                });
+            }
+            
+            // Draw connections
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            // Draw nodes
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            for (const node of nodes) {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+        
+        // Download functions
+        function downloadComparisonImage() {
+            const canvas = document.getElementById('comparisonCanvas');
+            const link = document.createElement('a');
+            link.download = 'deepfake-comparison.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function downloadDetectionImage() {
+            const canvas = document.getElementById('detectionCanvas');
+            const link = document.createElement('a');
+            link.download = 'ai-detection.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function downloadPatternImage() {
+            const canvas = document.getElementById('patternCanvas');
+            const link = document.createElement('a');
+            link.download = 'pattern-bg.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Initialize all canvases
+        window.onload = function() {
+            drawComparisonImage();
+            drawDetectionProcess();
+            drawPatternBackground();
+        };
+    </script>
+</body>
+</html> 
